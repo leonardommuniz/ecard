@@ -16,19 +16,15 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group([
 
-    'middleware' => 'api',
-    'prefix' => 'auth'
-
-], function ($router) {
 Route::post('/login', [AuthController::class,'login']);
-Route::post('/logout', [AuthController::class,'logout']);
-Route::post('/refresh', [AuthController::class,'refresh']);
-Route::post('/me', [AuthController::class,'me']);
-});
 Route::post('/register',[UserController::class,'create']);
+
 Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', [AuthController::class,'logout']);
+    Route::post('/refresh', [AuthController::class,'refresh']);
+    Route::post('/me', [AuthController::class,'me']);
+    
     Route::prefix('user')->group(function(){
         Route::get('/',[UserController::class,'list']);
         Route::get('/{id}',[UserController::class,'show']);
@@ -38,7 +34,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('card')->group(function(){
         Route::get('/',[CardController::class,'list']);
         Route::post('/',[CardController::class,'create']);
-        Route::get('/{id}',[CardController::class,'show']);
+        Route::get('/show/{id}',[CardController::class,'show']);
         Route::delete('/{id}',[CardController::class,'delete']);
+        Route::get('/card-user',[CardController::class,'cardUser']);
     });
 });
